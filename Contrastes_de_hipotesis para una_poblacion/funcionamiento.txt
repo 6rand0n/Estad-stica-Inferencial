@@ -1,0 +1,47 @@
+
+ARCHIVO: CH_util_una_poblacion.R
+Este archivo contiene las funciones que realizan los cálculos de los
+contrastes de hipótesis para una sola población. Aquí no se resuelve
+ningún ejercicio específico; solo se definen funciones reutilizables.
+
+
+FUNCIÓN: contraste_prop(Ha, p0, x, n, alfa)
+Se utiliza cuando el ejercicio trata sobre porcentajes o proporciones
+de una población.
+
+→ Ha: indica el tipo de contraste ("<", ">", "!=")
+→ p0: proporción establecida en la hipótesis nula
+→ x: número de éxitos observados
+→ n: tamaño de la muestra
+→ alfa: nivel de significancia
+
+
+FUNCIÓN: contraste_media_z(Ha, mu0, x_barra, sigma, n, alfa)
+Se utiliza cuando el ejercicio trata sobre una media poblacional y
+la desviación estándar poblacional es conocida.
+
+→ Ha: indica el tipo de contraste ("<", ">", "!=")
+→ mu0: media establecida en la hipótesis nula
+→ x_barra: media muestral
+→ sigma: desviación estándar poblacional conocida
+→ n: tamaño de la muestra
+→ alfa: nivel de significancia
+
+
+FUNCIÓN: contraste_media_t(Ha, mu0, x_barra, s, n, alfa)
+Se utiliza cuando el ejercicio trata sobre una media poblacional y
+la desviación estándar poblacional no es conocida.
+
+→ Ha: indica el tipo de contraste ("<", ">", "!=")
+→ mu0: media establecida en la hipótesis nula
+→ x_barra: media muestral
+→ s: desviación estándar muestral
+→ n: tamaño de la muestra
+→ alfa: nivel de significancia
+
+
+ARCHIVO: ejercicio_X.R
+Este archivo corresponde a un ejercicio específico. Su función es
+cargar el archivo de utilerías, definir los datos del problema,
+ejecutar la función adecuada, mostrar los resultados por partes
+y dar la conclusión final en el contexto del ejercicio.
