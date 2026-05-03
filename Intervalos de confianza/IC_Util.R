@@ -43,8 +43,17 @@ validarPositivo = function(valor, nombreParametro) {
 
 # =========================================================
 # ICprop
-# Intervalo para proporcion poblacional
+# Intervalo de confianza para una proporcion poblacional
+#
+# Parametros:
+# x          Numero de exitos
+# n          Tamano de muestra
+# coefConf   Coeficiente de confianza
+#
+# Regresa:
+# Lista con calculos intermedios y limites
 # =========================================================
+
 ICprop = function(x, n, coefConf=0.95) {
 
 	validarPositivo(n, "n")
@@ -184,7 +193,18 @@ ICprop = function(x, n, coefConf=0.95) {
 
 # =========================================================
 # ICmu
-# Intervalo para media poblacional
+# Intervalo de confianza para media poblacional
+#
+# Trabaja con:
+# - Sigma conocida  -> distribucion normal
+# - Sigma desconocida -> distribucion t
+#
+# Parametros:
+# x.barra
+# n
+# coefConf
+# sigma
+# s
 # =========================================================
 ICmu = function(
 	x.barra,
@@ -201,6 +221,12 @@ ICmu = function(
 	alfaMedios = alfa / 2
 
 	if(is.null(sigma)) {
+
+		if(is.null(s)) {
+			stop(
+				"Debe proporcionar sigma o s."
+			)
+		}
 
 		validarPositivo(s, "s")
 
@@ -321,7 +347,12 @@ ICmu = function(
 
 # =========================================================
 # ICvar
-# Intervalo para varianza poblacional
+# Intervalo de confianza para varianza poblacional
+#
+# Parametros:
+# s2
+# n
+# coefConf
 # =========================================================
 ICvar = function(
 	s2,
@@ -425,7 +456,11 @@ ICvar = function(
 
 # =========================================================
 # ICmu1mu2
-# Intervalo para diferencia de medias
+# Intervalo de confianza para diferencia de medias
+#
+# Casos:
+# - Sigmas conocidas
+# - Sigmas desconocidas pero iguales
 # =========================================================
 
 ICmu1mu2 = function(
