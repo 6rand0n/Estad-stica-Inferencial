@@ -1,0 +1,61 @@
+ARCHIVO: IC_Util.R
+Este archivo contiene las funciones reutilizables para calcular intervalos de confianza de dos poblaciones. Aqui no se resuelve ningun ejercicio especifico.
+
+FUNCION: validarProbabilidad(valor, nombreParametro)
+Valida que un nivel de confianza este entre 0 y 1.
+
+FUNCION: validarPositivo(valor, nombreParametro)
+Valida que un dato numerico sea mayor que cero.
+
+FUNCION: ICprop1prop2(x1, n1, x2, n2, coefConf)
+Se utiliza para ejercicios de diferencia de proporciones p1 - p2.
+
+Incluye la explicacion de parametros:
+-> x1: numero de exitos o casos favorables en la primera muestra
+-> n1: tamano de la primera muestra
+-> x2: numero de exitos o casos favorables en la segunda muestra
+-> n2: tamano de la segunda muestra
+-> coefConf: coeficiente de confianza, por ejemplo 0.95
+
+FUNCION: ICmu1mu2Sigmas(n1, n2, sigma1, sigma2, coefConf, x.barra1, x.barra2, dif.barras, z.critico)
+Se utiliza para ejercicios de diferencia de medias mu1 - mu2 cuando las desviaciones estandar poblacionales son conocidas.
+
+Incluye la explicacion de parametros:
+-> n1: tamano de la primera muestra
+-> n2: tamano de la segunda muestra
+-> sigma1: desviacion estandar poblacional de la primera poblacion
+-> sigma2: desviacion estandar poblacional de la segunda poblacion
+-> coefConf: coeficiente de confianza
+-> x.barra1: media muestral de la primera poblacion, si se conoce
+-> x.barra2: media muestral de la segunda poblacion, si se conoce
+-> dif.barras: diferencia x.barra1 - x.barra2, si ya se conoce directamente
+-> z.critico: valor Z manual opcional, solo si se desea reproducir un resultado dado por tabla o por el enunciado
+
+FUNCION: ICvar1var2(s1.2, n1, s2.2, n2, coefConf)
+Se utiliza para ejercicios de razon de varianzas sigma1^2 / sigma2^2.
+
+Incluye la explicacion de parametros:
+-> s1.2: varianza muestral de la primera poblacion
+-> n1: tamano de la primera muestra
+-> s2.2: varianza muestral de la segunda poblacion
+-> n2: tamano de la segunda muestra
+-> coefConf: coeficiente de confianza
+
+FUNCION: imprimirResultado(resultado)
+Imprime en pantalla el metodo usado, el procedimiento, el intervalo LIC y LSC, y la conclusion.
+
+ARCHIVO: CasosDeUso.R
+Este archivo sirve para demostrar que las funciones tambien pueden resolver los ejercicios 5 y 6. Aqui se cargan las funciones con source("IC_Util.R") y se cambian los datos en las llamadas a las funciones si el ejercicio cambia.
+
+ARCHIVO: Ejercicio_7.R
+Este archivo corresponde al ejercicio principal de razon de varianzas. Debe cargar IC_Util.R, definir los datos del ejercicio 7, ejecutar ICvar1var2() e imprimir el resultado con imprimirResultado().
+
+COMO CAMBIAR LOS DATOS
+No se deben modificar las funciones dentro de IC_Util.R. Para cambiar los valores de un ejercicio, solo se modifican los argumentos dentro de CasosDeUso.R o Ejercicio_7.R.
+
+COMO EJECUTAR
+Para ejecutar el ejercicio 7:
+& "C:\Program Files\R\R-4.6.0\bin\Rscript.exe" .\Ejercicio_7.R
+
+Para ejecutar los casos de uso:
+& "C:\Program Files\R\R-4.6.0\bin\Rscript.exe" .\CasosDeUso.R
