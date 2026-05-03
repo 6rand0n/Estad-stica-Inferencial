@@ -15,7 +15,6 @@
 #   - Prueba de homogeneidad (chi-cuadrada)
 # =====
 
-
 # =====================================================================
 # bondad_ajuste
 # Contraste de bondad de ajuste chi-cuadrada.
