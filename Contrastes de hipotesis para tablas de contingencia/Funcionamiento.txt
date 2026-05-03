@@ -1,0 +1,153 @@
+
+ARCHIVO: CH_contingencia_util.R
+-------------------------------------------------------------------
+Este archivo no resuelve ningun ejercicio especifico solo se definen funciones
+reutilizables que son cargadas desde el script principal mediante
+source("CH_contingencia_util.R").
+
+
+FUNCION: bondad_ajuste(observadas, esperadas, alfa, etiquetas)
+-------------------------------------------------------------------
+Se utiliza cuando se quiere verificar si los datos siguen una
+distribucion teorica cualquiera, proporcionando directamente las
+frecuencias esperadas calculadas de antemano.
+
+-> observadas : vector con las frecuencias observadas por categoria
+-> esperadas  : vector con las frecuencias esperadas bajo H0
+-> alfa       : nivel de significancia (por omision 0.05)
+-> etiquetas  : vector de nombres para las categorias (opcional)
+
+Devuelve una lista con:
+  - tabla        : data.frame con observadas, esperadas y contribuciones
+  - chi2_calc    : estadistico chi-cuadrada calculado
+  - gl           : grados de libertad (k - 1)
+  - chi2_crit    : valor critico de la distribucion chi-cuadrada
+  - p_valor      : probabilidad de obtener un valor >= chi2_calc bajo H0
+  - alfa         : nivel de significancia usado
+  - rechaza_H0   : TRUE si se rechaza H0, FALSE si no
+
+
+FUNCION: bondad_ajuste_poisson(limites_inf, limites_sup, observadas,
+                                lambda, n, alfa, etiquetas)
+-------------------------------------------------------------------
+Se utiliza cuando el ejercicio plantea verificar si los datos siguen
+una distribucion Poisson con una tasa lambda conocida. Calcula
+automaticamente las probabilidades teoricas por intervalo y las
+frecuencias esperadas, luego llama a bondad_ajuste() internamente.
+
+-> limites_inf : vector de limites inferiores de cada intervalo
+-> limites_sup : vector de limites superiores (usar Inf para cola abierta)
+-> observadas  : vector de frecuencias observadas por intervalo
+-> lambda      : tasa Poisson establecida en la hipotesis nula
+-> n           : tamano total de la muestra
+-> alfa        : nivel de significancia (por omision 0.05)
+-> etiquetas   : nombres para los intervalos (opcional)
+
+Devuelve lo mismo que bondad_ajuste(), mas:
+  - lambda : tasa Poisson usada
+  - probs  : probabilidades teoricas calculadas por intervalo
+  - n      : tamano de muestra
+
+
+FUNCION: prueba_independencia(tabla_obs, alfa)
+-------------------------------------------------------------------
+Se utiliza cuando el ejercicio pregunta si dos variables categoricas
+son independientes entre si, a partir de una tabla de contingencia
+de r filas por c columnas.
+
+-> tabla_obs : matriz o data.frame con las frecuencias observadas
+               (filas = niveles de la variable 1,
+                columnas = niveles de la variable 2)
+-> alfa      : nivel de significancia (por omision 0.05)
+
+Devuelve una lista con:
+  - tabla_observada : matriz de frecuencias observadas
+  - tabla_esperada  : matriz de frecuencias esperadas bajo H0
+  - contribuciones  : aporte de cada celda al estadistico chi-cuadrada
+  - chi2_calc       : estadistico chi-cuadrada calculado
+  - gl              : grados de libertad ( (r-1)*(c-1) )
+  - chi2_crit       : valor critico
+  - p_valor         : p-valor del contraste
+  - alfa            : nivel de significancia usado
+  - rechaza_H0      : TRUE si se rechaza H0, FALSE si no
+
+
+FUNCION: prueba_homogeneidad(tabla_obs, alfa)
+-------------------------------------------------------------------
+Se utiliza cuando el ejercicio compara la distribucion de una variable
+categorica entre dos o mas poblaciones (grupos), para verificar si
+la proporcion de cada categoria es la misma en todos los grupos.
+Mecanicamente es identica a prueba_independencia(); se separa para
+dejar claro el tipo de problema que resuelve.
+
+-> tabla_obs : matriz con frecuencias observadas
+               (filas = poblaciones o grupos,
+                columnas = categorias de la variable de respuesta)
+-> alfa      : nivel de significancia (por omision 0.05)
+
+Devuelve la misma estructura que prueba_independencia().
+
+
+FUNCION: imprimir_resultado_chi2(res, titulo)
+-------------------------------------------------------------------
+Funcion auxiliar que imprime en consola, de forma legible, el
+resultado devuelto por cualquiera de las funciones anteriores.
+
+-> res    : lista devuelta por alguna de las funciones de calculo
+-> titulo : texto que se muestra como encabezado del resultado
+
+
+===================================================================
+ARCHIVO: Ejercicios_Contingencia_ISC.R
+===================================================================
+Este es el script principal. Carga el archivo de utilerias al inicio
+con source(), luego resuelve cada ejercicio de la Seccion V en orden.
+Por cada ejercicio se definen los datos del problema como variables,
+se llama a la funcion correspondiente y se imprime la conclusion en
+el contexto del problema.
+
+Ningun dato esta insertado directamente dentro de las funciones
+(sin hardcoding). Si los valores del problema cambian, solo se
+modifican las variables al inicio de cada bloque de ejercicio.
+
+
+EJERCICIO 21 - Bondad de ajuste (Poisson, lambda = 8)
+  Funcion usada : bondad_ajuste_poisson()
+  Motivo        : los datos se agrupan en intervalos y se quiere
+                  verificar si siguen una Poisson con tasa conocida.
+
+EJERCICIO 22 - Bondad de ajuste (distribucion uniforme, Round Robin)
+  Funcion usada : bondad_ajuste()
+  Motivo        : bajo H0 cada servidor recibe la misma proporcion
+                  de peticiones (1/5), por lo que las frecuencias
+                  esperadas se calculan directamente como n/k.
+
+EJERCICIO 23 - Prueba de independencia (tipo de carga vs respuesta)
+  Funcion usada : prueba_independencia()
+  Motivo        : se quiere saber si el tiempo de respuesta depende
+                  del tipo de carga en el cluster.
+
+EJERCICIO 24 - Prueba de independencia (sexo vs carrera elegida)
+  Funcion usada : prueba_independencia()
+  Motivo        : se quiere saber si la eleccion de carrera es
+                  independiente del sexo del estudiante.
+
+EJERCICIO 25 - Prueba de homogeneidad (instructores vs aprobados)
+  Funcion usada : prueba_homogeneidad()
+  Motivo        : se comparan tres grupos distintos (instructores)
+                  para verificar si la proporcion de aprobados es
+                  la misma en todos ellos.
+
+
+===================================================================
+ COMO EJECUTARr ?
+===================================================================
+1. Colocar ambos archivos en el mismo directorio de trabajo.
+2. Abrir Ejercicios_Contingencia_ISC.R en RStudio o ejecutar
+   desde terminal con:
+
+       Rscript Ejercicios_Contingencia_ISC.R
+
+3. El script cargara CH_contingencia_util.R automaticamente y
+   mostrara los resultados de los cinco ejercicios en consola.
+
