@@ -7,7 +7,8 @@
 # Archivo principal para los ejercicios de inferencia estadistica
 # =========================================================
 
-source("C:/Users/brand/Downloads/IC_Util.R")
+# setwd("D:/VSC Proyectos/Inferencia estadistica/")
+source("Intervalos de confianza/IC_Util.R")
 
 # =========================================================
 # Funcion para imprimir resultados

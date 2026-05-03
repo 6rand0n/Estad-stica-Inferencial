@@ -1,15 +1,16 @@
 # =========================================================
+# Archivo: IC_Util.R
+# =========================================================
 # Universidad Autonoma de Aguascalientes
 # Centro de Ciencias Basicas
 # Departamento de Estadistica
 # Inferencia Estadistica
 #
-# Utilerias para los ejercicios de intervalos de confianza
+# Utilerias para intervalos de confianza
 # =========================================================
 
 # =========================================================
 # validarProbabilidad
-# Verifica que el coeficiente de confianza sea valido
 # =========================================================
 validarProbabilidad = function(valor, nombreParametro) {
 
@@ -26,7 +27,6 @@ validarProbabilidad = function(valor, nombreParametro) {
 
 # =========================================================
 # validarPositivo
-# Verifica que un numero sea positivo
 # =========================================================
 validarPositivo = function(valor, nombreParametro) {
 
@@ -43,25 +43,14 @@ validarPositivo = function(valor, nombreParametro) {
 
 # =========================================================
 # ICprop
-# Intervalo de confianza para una proporcion poblacional
+# Intervalo para proporcion poblacional
 # =========================================================
-#
-# Parametros:
-# x          Numero de exitos
-# n          Tamano de muestra
-# coefConf   Coeficiente de confianza
-#
-# Regresa:
-# Lista con calculos intermedios y limites
-# =========================================================
-
 ICprop = function(x, n, coefConf=0.95) {
 
 	validarPositivo(n, "n")
 	validarProbabilidad(coefConf, "coefConf")
 
 	if(x < 0 || x > n) {
-
 		stop("x debe estar entre 0 y n.")
 	}
 
@@ -75,16 +64,95 @@ ICprop = function(x, n, coefConf=0.95) {
 		lower.tail = FALSE
 	)
 
-	error = z * sqrt(
-		(p * (1 - p)) / n
-	)
+	varianza = (p * (1 - p)) / n
+
+	raiz = sqrt(varianza)
+
+	error = z * raiz
 
 	lic = p - error
 	lsc = p + error
 
-	# Ajuste de limites validos
 	lic = max(0, lic)
 	lsc = min(1, lsc)
+
+	# -----------------------------------------------------
+	# Procedimiento 
+	# -----------------------------------------------------
+
+	pasos = c(
+
+		paste(
+			"p̂ = x / n =",
+			x,
+			"/",
+			n,
+			"=",
+			round(p, 6)
+		),
+
+		paste(
+			"alfa = 1 -",
+			coefConf,
+			"=",
+			round(alfa, 6)
+		),
+
+		paste(
+			"z crítico =",
+			round(z, 6)
+		),
+
+		paste(
+			"Error estándar = sqrt((p*(1-p))/n)"
+		),
+
+		paste(
+			"   = sqrt((",
+			round(p, 6),
+			"*(1-",
+			round(p, 6),
+			"))/",
+			n,
+			")"
+		),
+
+		paste(
+			"   =",
+			round(raiz, 6)
+		),
+
+		paste(
+			"Error máximo = z * error estándar"
+		),
+
+		paste(
+			"   =",
+			round(z, 6),
+			"*",
+			round(raiz, 6),
+			"=",
+			round(error, 6)
+		),
+
+		paste(
+			"LIC =",
+			round(p, 6),
+			"-",
+			round(error, 6),
+			"=",
+			round(lic, 6)
+		),
+
+		paste(
+			"LSC =",
+			round(p, 6),
+			"+",
+			round(error, 6),
+			"=",
+			round(lsc, 6)
+		)
+	)
 
 	resultado = list(
 
@@ -106,7 +174,9 @@ ICprop = function(x, n, coefConf=0.95) {
 		intervalo = list(
 			LIC = lic,
 			LSC = lsc
-		)
+		),
+
+		procedimiento = pasos
 	)
 
 	return(resultado)
@@ -114,21 +184,8 @@ ICprop = function(x, n, coefConf=0.95) {
 
 # =========================================================
 # ICmu
-# Intervalo de confianza para media poblacional
+# Intervalo para media poblacional
 # =========================================================
-#
-# Trabaja con:
-# - Sigma conocida  -> distribucion normal
-# - Sigma desconocida -> distribucion t
-#
-# Parametros:
-# x.barra
-# n
-# coefConf
-# sigma
-# s
-# =========================================================
-
 ICmu = function(
 	x.barra,
 	n,
@@ -145,13 +202,6 @@ ICmu = function(
 
 	if(is.null(sigma)) {
 
-		if(is.null(s)) {
-
-			stop(
-				"Debe proporcionar sigma o s."
-			)
-		}
-
 		validarPositivo(s, "s")
 
 		estadistico = qt(
@@ -160,7 +210,9 @@ ICmu = function(
 			lower.tail = FALSE
 		)
 
-		error = estadistico * s / sqrt(n)
+		errorEstandar = s / sqrt(n)
+
+		error = estadistico * errorEstandar
 
 		distribucion = "t Student"
 
@@ -173,13 +225,71 @@ ICmu = function(
 			lower.tail = FALSE
 		)
 
-		error = estadistico * sigma / sqrt(n)
+		errorEstandar = sigma / sqrt(n)
+
+		error = estadistico * errorEstandar
 
 		distribucion = "Normal Z"
 	}
 
 	lic = x.barra - error
 	lsc = x.barra + error
+
+	# -----------------------------------------------------
+	# Procedimiento
+	# -----------------------------------------------------
+
+	pasos = c(
+
+		paste(
+			"alfa = 1 -",
+			coefConf,
+			"=",
+			round(alfa, 6)
+		),
+
+		paste(
+			"Distribucion utilizada:",
+			distribucion
+		),
+
+		paste(
+			"Estadistico crítico =",
+			round(estadistico, 6)
+		),
+
+		paste(
+			"Error estándar =",
+			round(errorEstandar, 6)
+		),
+
+		paste(
+			"Error máximo =",
+			round(estadistico, 6),
+			"*",
+			round(errorEstandar, 6),
+			"=",
+			round(error, 6)
+		),
+
+		paste(
+			"LIC =",
+			round(x.barra, 6),
+			"-",
+			round(error, 6),
+			"=",
+			round(lic, 6)
+		),
+
+		paste(
+			"LSC =",
+			round(x.barra, 6),
+			"+",
+			round(error, 6),
+			"=",
+			round(lsc, 6)
+		)
+	)
 
 	resultado = list(
 
@@ -188,9 +298,7 @@ ICmu = function(
 		parametros = list(
 			x.barra = x.barra,
 			n = n,
-			coefConf = coefConf,
-			sigma = sigma,
-			s = s
+			coefConf = coefConf
 		),
 
 		calculos = list(
@@ -203,7 +311,9 @@ ICmu = function(
 		intervalo = list(
 			LIC = lic,
 			LSC = lsc
-		)
+		),
+
+		procedimiento = pasos
 	)
 
 	return(resultado)
@@ -211,15 +321,8 @@ ICmu = function(
 
 # =========================================================
 # ICvar
-# Intervalo de confianza para varianza poblacional
+# Intervalo para varianza poblacional
 # =========================================================
-#
-# Parametros:
-# s2
-# n
-# coefConf
-# =========================================================
-
 ICvar = function(
 	s2,
 	n,
@@ -245,29 +348,76 @@ ICvar = function(
 	)
 
 	lic = (gl * s2) / chiSuperior
+
 	lsc = (gl * s2) / chiInferior
+
+	# -----------------------------------------------------
+	# Procedimiento
+	# -----------------------------------------------------
+
+	pasos = c(
+
+		paste(
+			"alfa =",
+			round(alfa, 6)
+		),
+
+		paste(
+			"Grados de libertad =",
+			gl
+		),
+
+		paste(
+			"Chi cuadrada inferior =",
+			round(chiInferior, 6)
+		),
+
+		paste(
+			"Chi cuadrada superior =",
+			round(chiSuperior, 6)
+		),
+
+		paste(
+			"LIC = (gl*s2)/ChiSup"
+		),
+
+		paste(
+			"   = (",
+			gl,
+			"*",
+			s2,
+			")/",
+			round(chiSuperior, 6),
+			"=",
+			round(lic, 6)
+		),
+
+		paste(
+			"LSC = (gl*s2)/ChiInf"
+		),
+
+		paste(
+			"   = (",
+			gl,
+			"*",
+			s2,
+			")/",
+			round(chiInferior, 6),
+			"=",
+			round(lsc, 6)
+		)
+	)
 
 	resultado = list(
 
 		metodo = "IC para varianza",
 
-		parametros = list(
-			s2 = s2,
-			n = n,
-			coefConf = coefConf
-		),
-
-		calculos = list(
-			alfa = alfa,
-			gl = gl,
-			chiInferior = chiInferior,
-			chiSuperior = chiSuperior
-		),
-
 		intervalo = list(
 			LIC = lic,
 			LSC = lsc
-		)
+		),
+
+		procedimiento = pasos
 	)
 
 	return(resultado)
@@ -276,11 +426,6 @@ ICvar = function(
 # =========================================================
 # ICmu1mu2
 # Intervalo para diferencia de medias
-# =========================================================
-#
-# Casos:
-# - Sigmas conocidas
-# - Sigmas desconocidas pero iguales
 # =========================================================
 
 ICmu1mu2 = function(
@@ -337,12 +482,15 @@ ICmu1mu2 = function(
 				((n2 - 1) * s2^2)
 			) / gl
 
-		error =
-			estadistico *
+		errorEstandar =
 			sqrt(
 				sp2 *
 				((1 / n1) + (1 / n2))
 			)
+
+		error =
+			estadistico *
+			errorEstandar
 
 		distribucion = "t Student"
 
@@ -353,18 +501,86 @@ ICmu1mu2 = function(
 			lower.tail = FALSE
 		)
 
-		error =
-			estadistico *
+		errorEstandar =
 			sqrt(
 				(sigma1^2 / n1) +
 				(sigma2^2 / n2)
 			)
+
+		error =
+			estadistico *
+			errorEstandar
 
 		distribucion = "Normal Z"
 	}
 
 	lic = diferencia - error
 	lsc = diferencia + error
+
+	# -----------------------------------------------------
+	# Procedimiento 
+	# -----------------------------------------------------
+
+	pasos = c(
+
+		paste(
+			"Diferencia de medias =",
+			x.barra1,
+			"-",
+			x.barra2,
+			"=",
+			round(diferencia,6)
+		),
+
+		paste(
+			"alfa = 1 -",
+			coefConf,
+			"=",
+			round(alfa,6)
+		),
+
+		paste(
+			"Distribucion utilizada:",
+			distribucion
+		),
+
+		paste(
+			"Estadistico critico =",
+			round(estadistico,6)
+		),
+
+		paste(
+			"Error estandar =",
+			round(errorEstandar,6)
+		),
+
+		paste(
+			"Error maximo =",
+			round(estadistico,6),
+			"*",
+			round(errorEstandar,6),
+			"=",
+			round(error,6)
+		),
+
+		paste(
+			"LIC =",
+			round(diferencia,6),
+			"-",
+			round(error,6),
+			"=",
+			round(lic,6)
+		),
+
+		paste(
+			"LSC =",
+			round(diferencia,6),
+			"+",
+			round(error,6),
+			"=",
+			round(lsc,6)
+		)
+	)
 
 	resultado = list(
 
@@ -388,7 +604,9 @@ ICmu1mu2 = function(
 		intervalo = list(
 			LIC = lic,
 			LSC = lsc
-		)
+		),
+
+		procedimiento = pasos
 	)
 
 	return(resultado)
