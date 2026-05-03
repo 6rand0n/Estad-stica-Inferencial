@@ -45,6 +45,24 @@ validarPositivo = function(valor, nombreParametro) {
 # ICprop
 # Intervalo de confianza para una proporcion poblacional
 #
+# Uso recomendado:
+# - Puede utilizarse aunque la poblacion
+#   original no siga una distribucion normal.
+# - Funciona mediante aproximacion normal
+#   apoyada en el Teorema Central del Limite.
+#
+# Requisitos recomendados:
+# - La muestra debe ser aleatoria.
+# - Las observaciones deben ser independientes.
+# - Se recomienda que:
+#     n*p >= 5
+#     n*(1-p) >= 5
+#
+# TCL:
+# - La distribucion muestral de p̂ se aproxima
+#   a una normal cuando el tamano de muestra
+#   es suficientemente grande.
+#
 # Parametros:
 # x          Numero de exitos
 # n          Tamano de muestra
@@ -195,16 +213,34 @@ ICprop = function(x, n, coefConf=0.95) {
 # ICmu
 # Intervalo de confianza para media poblacional
 #
-# Trabaja con:
-# - Sigma conocida  -> distribucion normal
-# - Sigma desconocida -> distribucion t
+# Casos soportados:
+#
+# 1) Sigma conocida
+#    - Utiliza distribucion Normal Z.
+#
+# 2) Sigma desconocida
+#    - Utiliza distribucion t Student.
+#
+# Uso recomendado:
+# - Puede utilizarse si la poblacion es normal.
+# - Tambien puede utilizarse aunque la
+#   poblacion NO sea normal si el tamano
+#   de muestra es suficientemente grande
+#   (aplicando TCL).
+#
+# Regla practica:
+# - Comunmente se considera suficiente:
+#       n >= 30
 #
 # Parametros:
-# x.barra
-# n
-# coefConf
-# sigma
-# s
+# x.barra    Media muestral
+# n          Tamano de muestra
+# coefConf   Coeficiente de confianza
+# sigma      Desviacion estandar poblacional
+# s          Desviacion estandar muestral
+#
+# Regresa:
+# Lista con calculos intermedios y limites
 # =========================================================
 ICmu = function(
 	x.barra,
@@ -349,10 +385,30 @@ ICmu = function(
 # ICvar
 # Intervalo de confianza para varianza poblacional
 #
+# Utiliza la distribucion Chi-cuadrada
+#
+# Uso recomendado:
+# - SOLO debe utilizarse si puede asumirse
+#   que la poblacion sigue una distribucion
+#   normal.
+#
+# IMPORTANTE:
+# - Este metodo NO se corrige con el TCL.
+# - Aunque la muestra sea grande, la
+#   normalidad poblacional sigue siendo
+#   necesaria.
+#
+# Requisitos:
+# - Muestra aleatoria.
+# - Observaciones independientes.
+#
 # Parametros:
-# s2
-# n
-# coefConf
+# s2         Varianza muestral
+# n          Tamano de muestra
+# coefConf   Coeficiente de confianza
+#
+# Regresa:
+# Lista con calculos intermedios y limites
 # =========================================================
 ICvar = function(
 	s2,
@@ -443,11 +499,24 @@ ICvar = function(
 
 		metodo = "IC para varianza",
 
+		parametros = list(
+			s2 = s2,
+			n = n,
+			coefConf = coefConf
+		),
+
+		calculos = list(
+			alfa = alfa,
+			gl = gl,
+			chiInferior = chiInferior,
+			chiSuperior = chiSuperior
+		),
+
 		intervalo = list(
 			LIC = lic,
 			LSC = lsc
 		),
-
+	
 		procedimiento = pasos
 	)
 
@@ -458,9 +527,40 @@ ICvar = function(
 # ICmu1mu2
 # Intervalo de confianza para diferencia de medias
 #
-# Casos:
-# - Sigmas conocidas
-# - Sigmas desconocidas pero iguales
+# Casos soportados:
+#
+# 1) Sigmas conocidas
+#    - Utiliza distribucion Normal Z.
+#
+# 2) Sigmas desconocidas pero asumidas iguales
+#    - Utiliza distribucion t Student.
+#
+# Uso recomendado:
+# - Puede utilizarse si ambas poblaciones
+#   son normales.
+# - Tambien puede utilizarse aunque las
+#   poblaciones NO sean normales si ambos
+#   tamanos de muestra son suficientemente
+#   grandes (aplicando TCL).
+#
+# Regla practica:
+# - Comunmente:
+#       n1 >= 30
+#       n2 >= 30
+#
+# Parametros:
+# x.barra1   Media muestral del grupo 1
+# n1         Tamano de muestra del grupo 1
+# x.barra2   Media muestral del grupo 2
+# n2         Tamano de muestra del grupo 2
+# coefConf   Coeficiente de confianza
+# sigma1     Desviacion estandar poblacional grupo 1
+# sigma2     Desviacion estandar poblacional grupo 2
+# s1         Desviacion estandar muestral grupo 1
+# s2         Desviacion estandar muestral grupo 2
+#
+# Regresa:
+# Lista con calculos intermedios y limites
 # =========================================================
 
 ICmu1mu2 = function(
@@ -633,7 +733,9 @@ ICmu1mu2 = function(
 			alfa = alfa,
 			distribucion = distribucion,
 			estadistico = estadistico,
-			error = error
+			errorEstandar = errorEstandar,
+			error = error,
+			diferencia = diferencia
 		),
 
 		intervalo = list(
