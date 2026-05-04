@@ -95,19 +95,3 @@ ej4 = ICvar(
 )
 
 imprimirResultado(ej4)
-
-# =========================================================
-# IC para diferencia de medias
-# =========================================================
-
-ej5 = ICmu1mu2(
-	x.barra1 = 4.1,
-	sigma1 = 1.8,
-	n1 = 100,
-	x.barra2 = 4.5,
-	sigma2 = 2,
-	n2 = 100,
-	coefConf = 0.90
-)
-
-imprimirResultado(ej5)
