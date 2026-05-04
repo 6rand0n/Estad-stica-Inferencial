@@ -1,0 +1,28 @@
+### Archivo 'IC_Util.R' ###
+Contiene la lógica de la función para obtener el contraste de hipótesis de dos poblaciones
+
+Función: 'contraste_hipotesis_z_2pob'
+Ejecuta la prueba Z para la diferencia de medias de dos poblaciones con varianzas conocidas.
+
+Parámetros de entrada:
+- Muestrales: Tamaños de muestra, medias muestrales y varianzas poblacionales.
+- Significancia: El valor alpha para determinar las regiones de rechazo.
+- Tipo de contraste: Define la hipótesis alternativa conforme a las reglas estadísticas:
+    - bilateral (igualdad a cero): Su hipótesis alternativa es que la diferencia sea diferente de cero.
+	- mayor_igual: Su hipótesis alternativa es que la diferencia sea menor a cero.
+	- menor_igual: Su hipótesis alternativa es que la diferencia sea mayor a cero.
+
+Proceso interno:
+1. Cálculo de estadísticos: Obtiene la diferencia de medias y el error estándar de la diferencia.
+2. Cálculo de Z: Determina el valor del estadístico de prueba.
+3. Determinación de valores críticos: Utiliza la función `qnorm()` de R para encontrar los umbrales de la distribución normal según el alpha y el tipo de contraste.
+4. Decisión: Compara el valor calculado contra el crítico y genera el p-valor para determinar si se rechaza la hipótesis nula.
+
+
+### Archivo 'CasosDeuso.R' ###
+Este script actúa como un banco de pruebas para ejercicios generales:
+- Ejercicio 15: Evalúa la igualdad de medias entre dos tipos de lectores láser mediante un contraste bilateral con alpha 0.01.
+- Ejercicio 16: Realiza un contraste de tipo menor o igual para comparar la calidad de proveedores de circuitos, procesando primero los vectores de datos para obtener sus medias.
+
+### Archivo 'Ejercicio17.R' ###
+Script dedicado exclusivamente a la resolución del problema de contenido de sodio en bebidas, en donde se aplica un contraste de tipo mayor o igual para verificar si el contenido de sodio en el sabor ginger ale es menor al de cola.
