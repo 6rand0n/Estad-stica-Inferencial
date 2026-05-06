@@ -53,7 +53,6 @@ tipo_contraste <- "mayor_igual"
 # para afirmar que el contenido medio de sodio en las bebidas de ginger ale sea
 # significativamente menor que en las bebidas de cola.
 
-cat("\n--- RESULTADOS EJERCICIO 17 ---\n")
+print("\n--- RESULTADOS EJERCICIO 17 ---\n")
 res_ej17 = contraste_hipotesis_z_2pob(n1, xbar1, var1, n2, xbar2, var2, alpha, tipo_contraste)
-print(res_ej17)
-
+cat(res_ej17$procedimiento)

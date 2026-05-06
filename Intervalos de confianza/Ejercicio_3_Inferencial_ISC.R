@@ -8,7 +8,7 @@
 # =========================================================
 
 # setwd("D:/VSC Proyectos/Inferencia estadistica/")
-source("Intervalos de confianza/IC_Util.R")
+source("C:/Users/Dookie/Documents/Estad-stica-Inferencial/Intervalos de confianza/IC_Util.R")
 
 # =========================================================
 # Funcion para imprimir resultados
